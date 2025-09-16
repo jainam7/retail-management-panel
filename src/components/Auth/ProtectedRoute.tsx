@@ -1,0 +1,52 @@
+// // components/Auth/ProtectedRoute.tsx
+// "use client";
+
+// import React, { useEffect } from "react";
+// import { useAppSelector } from "@/store/hooks";
+// import { useRouter } from "next/navigation";
+
+// export default function ProtectedRoute({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   const auth = useAppSelector((s) => s.auth);
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     // If not authenticated, redirect to login
+//     if (!auth.isAuthenticated) {
+//       router.replace("/login");
+//     }
+//   }, [auth.isAuthenticated, router]);
+
+//   // Optionally show null / loader while checking
+//   if (!auth.isAuthenticated) {
+//     return null;
+//   }
+
+//   return <>{children}</>;
+// }
+
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function ProtectedRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const auth = localStorage.getItem("auth");
+
+    if (!auth) {
+      router.replace("/login"); // Force redirect if not logged in
+    }
+  }, [router]);
+
+  return <>{children}</>;
+}
