@@ -5,7 +5,7 @@ import { Product } from "../types";
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (product: Omit<any, "id" | "createdAt" | "updatedAt">) => void;
+  onSubmit: (product: Product) => void;
   editingProduct?: Product | null;
 }
 

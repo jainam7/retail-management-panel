@@ -23,12 +23,19 @@ function* handleLogin(
     const { email, password, remember } = action.payload;
 
     // A simple demo check — change to real API call here.
-    const VALID_EMAIL = "demo@demo.com";
-    const VALID_PASSWORD = "password";
+    const VALID_EMAIL = "retailer@example.com";
+    const VALID_PASSWORD = "RetailerPass123";
 
     if (email === VALID_EMAIL && password === VALID_PASSWORD) {
       const token = "demo-token-123"; // mock token
-      const user = { name: "Demo User", email: VALID_EMAIL };
+      const user = {
+        name: "Demo User",
+        email: VALID_EMAIL,
+        businessName: "Reliance",
+        businessCategory: "Retail",
+        businessPhone: "9912332233",
+        businessAddress: "Mumbai",
+      };
       yield put(loginSuccess({ token, user, remember }));
     } else {
       // If you prefer to allow any credentials, comment out the next line and

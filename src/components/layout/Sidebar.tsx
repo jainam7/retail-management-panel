@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils"; // helper for conditional classes
+import { cn } from "@/lib/utils";
 import {
   Home,
   Package,
@@ -11,6 +11,8 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Route } from "next";
 
 const menuItems = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -23,16 +25,50 @@ const menuItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [user, setUser] = useState<{
+    name: string;
+    businessName?: string;
+  } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const authData = localStorage.getItem("auth");
+    if (authData) {
+      try {
+        const parsed = JSON.parse(authData);
+        setUser(parsed.user);
+      } catch (err) {
+        console.error("Failed to parse auth data", err);
+      }
+    }
+  }, []);
 
   const handleSignOut = () => {
-    // Clear auth data (localStorage/session or Redux store)
     localStorage.removeItem("auth");
-    // Redirect to login
     router.push("/login");
   };
 
+  if (!mounted) {
+    // Render placeholder to avoid hydration mismatch
+    return (
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r p-4 flex flex-col z-10">
+        <div className="mb-6 px-2">
+          <h1 className="text-lg font-bold">Retailer Panel</h1>
+        </div>
+        <div className="flex items-center gap-3 mb-6 px-2">
+          <div className="h-10 w-10 rounded-full bg-gray-300 animate-pulse" />
+          <div>
+            <p className="text-sm font-semibold text-gray-400">Loading...</p>
+            <p className="text-xs text-gray-300">...</p>
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
   return (
-    <aside className="h-screen w-64 bg-white border-r p-4 flex flex-col">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r p-4 flex flex-col z-10">
       {/* Header */}
       <div className="mb-6 px-2">
         <h1 className="text-lg font-bold">Retailer Panel</h1>
@@ -41,11 +77,13 @@ export function Sidebar() {
       {/* User Info */}
       <div className="flex items-center gap-3 mb-6 px-2">
         <div className="h-10 w-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
-          JS
+          {user?.name ? user.name.charAt(0).toUpperCase() : "?"}
         </div>
         <div>
-          <p className="text-sm font-semibold">Jainam Shah</p>
-          <p className="text-xs text-gray-500">Reliance</p>
+          <p className="text-sm font-semibold">{user?.name || "Guest User"}</p>
+          <p className="text-xs text-gray-500">
+            {user?.businessName || "No Business"}
+          </p>
         </div>
       </div>
 
@@ -57,7 +95,7 @@ export function Sidebar() {
             return (
               <li key={name}>
                 <Link
-                  href={href}
+                  href={{ pathname: href }}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                     isActive
@@ -74,7 +112,7 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      {/* Sign Out Button */}
+      {/* Sign Out */}
       <div className="mt-auto">
         <button
           onClick={handleSignOut}

@@ -1,14 +1,13 @@
-// app/dashboard/page.tsx
 import Providers from "@/components/Providers";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
-import Deliveries from "@/components/Pages/Deliveries";
+import Setting from "@/components/Pages/Settings";
 
-export default function DeliveriesPage() {
+export default function SettingsPage() {
   return (
     <Providers>
       <ProtectedRoute>
         <div>
-          <Deliveries />
+          <Setting />
         </div>
       </ProtectedRoute>
     </Providers>

@@ -16,13 +16,11 @@ export default function DashboardLayout({
   return (
     <html lang="en">
       <body>
-        <div className="flex">
+        <div className="min-h-screen bg-gray-50">
           <Sidebar />
-          <Providers>
-            <main className="flex-1 min-h-screen bg-gray-50 p-4">
-              {children}
-            </main>
-          </Providers>
+          <main className="ml-64 p-6">
+            <div className="max-w-7xl mx-auto">{children}</div>
+          </main>
         </div>
       </body>
     </html>

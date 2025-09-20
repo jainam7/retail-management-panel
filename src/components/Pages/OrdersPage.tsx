@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Filter,
   MoreHorizontal,
@@ -472,44 +472,9 @@ export default function OrdersPage() {
                     </td>
                     <td className="px-6 py-4">{order.deliveryAgent}</td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(order.date).toLocaleString()}
+                      <ClientDate date={order.date} />
                     </td>
-                    {/* <td className="px-6 py-4 text-right relative">
-                      <button
-                        className="p-2 hover:bg-gray-100 rounded-lg"
-                        onClick={() =>
-                          setOpenMenu(openMenu === order.id ? null : order.id)
-                        }
-                      >
-                        <MoreHorizontal size={16} />
-                      </button>
 
-                      
-                      {openMenu === order.id && (
-                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
-                          <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-50">
-                            View Details
-                          </button>
-                          {order.status !== "DELIVERED" &&
-                            order.status !== "CANCELLED" && (
-                              <button
-                                onClick={() => handleNextStatus(order)}
-                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
-                              >
-                                Move to Next Status
-                              </button>
-                            )}
-                          {order.status !== "DELIVERED" && (
-                            <button
-                              onClick={() => handleCancelOrder(order)}
-                              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
-                            >
-                              Cancel Order
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </td> */}
                     <td className="px-6 py-4 text-right relative">
                       <div className="relative inline-block text-left fixed">
                         <button
@@ -662,4 +627,23 @@ function SortableHeader({
       </div>
     </th>
   );
+}
+
+function ClientDate({ date }: { date: string }) {
+  const [formatted, setFormatted] = useState<string>("");
+
+  useEffect(() => {
+    const d = new Date(date);
+    setFormatted(
+      d.toLocaleString([], {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  }, [date]);
+
+  return <span>{formatted || "--"}</span>;
 }

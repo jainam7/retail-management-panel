@@ -37,14 +37,9 @@ if (typeof window !== "undefined") {
       });
       if (auth.remember) {
         localStorage.setItem("auth", payload);
-        sessionStorage.removeItem("auth");
-      } else {
-        sessionStorage.setItem("auth", payload);
-        localStorage.removeItem("auth");
       }
     } else {
       localStorage.removeItem("auth");
-      sessionStorage.removeItem("auth");
     }
   });
 }

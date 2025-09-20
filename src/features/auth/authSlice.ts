@@ -19,7 +19,7 @@ type AuthState = {
 
 function loadPersisted(): Partial<AuthState> | null {
   if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem("auth") || sessionStorage.getItem("auth");
+  const raw = localStorage.getItem("auth");
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw);
