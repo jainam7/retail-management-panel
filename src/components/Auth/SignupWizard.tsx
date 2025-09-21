@@ -10,11 +10,30 @@ import {
   sendOtpSuccess,
 } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
-import { CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// ---------------- Types ----------------
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 type Step1Data = {
   name: string;
   email: string;
@@ -30,141 +49,6 @@ type Step3Data = {
   file?: FileList;
   acceptTerms: boolean;
 };
-
-// ---------------- Reusable Inputs ----------------
-const FormInput = ({
-  label,
-  type = "text",
-  placeholder,
-  error,
-  valid,
-  register,
-  showToggle,
-  showValue,
-  onToggle,
-}: {
-  label: string;
-  type?: string;
-  placeholder: string;
-  error?: string;
-  valid?: boolean;
-  register: any;
-  showToggle?: boolean;
-  showValue?: boolean;
-  onToggle?: () => void;
-}) => {
-  return (
-    <div className="space-y-1">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
-      <div className="relative">
-        <input
-          {...register}
-          type={showToggle ? (showValue ? "text" : "password") : type}
-          placeholder={placeholder}
-          className={`w-full p-3 border-2 rounded-lg transition-colors ${
-            error
-              ? "border-red-500 focus:border-red-500"
-              : valid
-              ? "border-green-500 focus:border-green-500"
-              : "border-gray-300 focus:border-blue-500"
-          } focus:outline-none`}
-        />
-        {/* Error Icon */}
-        {error && (
-          <AlertCircle
-            className="absolute right-12 top-3.5 text-red-500"
-            size={18}
-          />
-        )}
-        {/* Success Icon */}
-        {!error && valid && (
-          <CheckCircle
-            className="absolute right-12 top-3.5 text-green-500"
-            size={18}
-          />
-        )}
-        {/* Password Toggle */}
-        {showToggle && (
-          <button
-            type="button"
-            onClick={onToggle}
-            className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700"
-          >
-            {showValue ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        )}
-      </div>
-      {/* Error Message */}
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
-    </div>
-  );
-};
-
-const FormTextArea = ({
-  label,
-  placeholder,
-  error,
-  valid,
-  register,
-}: {
-  label: string;
-  placeholder: string;
-  error?: string;
-  valid?: boolean;
-  register: any;
-}) => (
-  <div className="space-y-1">
-    <label className="block text-sm font-medium text-gray-700">{label}</label>
-    <textarea
-      {...register}
-      placeholder={placeholder}
-      rows={3}
-      className={`w-full p-3 border-2 rounded-lg transition-colors resize-none ${
-        error
-          ? "border-red-500 focus:border-red-500"
-          : valid
-          ? "border-green-500 focus:border-green-500"
-          : "border-gray-300 focus:border-blue-500"
-      } focus:outline-none`}
-    />
-    {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
-  </div>
-);
-
-const FormSelect = ({
-  label,
-  options,
-  error,
-  valid,
-  register,
-}: {
-  label: string;
-  options: { value: string; label: string }[];
-  error?: string;
-  valid?: boolean;
-  register: any;
-}) => (
-  <div className="space-y-1">
-    <label className="block text-sm font-medium text-gray-700">{label}</label>
-    <select
-      {...register}
-      className={`w-full p-3 border-2 rounded-lg transition-colors ${
-        error
-          ? "border-red-500 focus:border-red-500"
-          : valid
-          ? "border-green-500 focus:border-green-500"
-          : "border-gray-300 focus:border-blue-500"
-      } focus:outline-none`}
-    >
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-    {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
-  </div>
-);
 
 // ---------------- Main Component ----------------
 export default function SignupWizard() {
@@ -201,21 +85,13 @@ export default function SignupWizard() {
     }),
   });
 
-  const {
-    register: r1,
-    handleSubmit: h1,
-    formState: { errors: e1, touchedFields: t1 },
-  } = useForm<Step1Data>({
+  const formStep1 = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
     mode: "onBlur",
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const {
-    register: r3,
-    handleSubmit: h3,
-    formState: { errors: e3, touchedFields: t3 },
-  } = useForm<Step3Data>({
+  const formStep3 = useForm<Step3Data>({
     resolver: zodResolver(step3Schema),
     mode: "onBlur",
     defaultValues: {
@@ -298,49 +174,107 @@ export default function SignupWizard() {
               title="Create Account"
               subtitle="Enter your basic information"
             />
-            <form onSubmit={h1(submitStep1)} className="space-y-6">
-              <FormInput
-                label="Full Name"
-                placeholder="Enter your full name"
-                register={r1("name")}
-                error={e1.name?.message}
-                valid={t1.name && !e1.name}
-              />
-              <FormInput
-                label="Email Address"
-                type="email"
-                placeholder="Enter your email"
-                register={r1("email")}
-                error={e1.email?.message}
-                valid={t1.email && !e1.email}
-              />
-              <FormInput
-                label="Password"
-                placeholder="Create a password"
-                register={r1("password")}
-                error={e1.password?.message}
-                valid={t1.password && !e1.password}
-                showToggle
-                showValue={showPassword}
-                onToggle={() => setShowPassword((s) => !s)}
-              />
-              <FormInput
-                label="Confirm Password"
-                placeholder="Confirm your password"
-                register={r1("confirmPassword")}
-                error={e1.confirmPassword?.message}
-                valid={t1.confirmPassword && !e1.confirmPassword}
-                showToggle
-                showValue={showConfirmPassword}
-                onToggle={() => setShowConfirmPassword((s) => !s)}
-              />
-              <button
-                type="submit"
-                className="w-full py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+            <Form {...formStep1}>
+              <form
+                onSubmit={formStep1.handleSubmit(submitStep1)}
+                className="space-y-6"
               >
-                Continue
-              </button>
-            </form>
+                <FormField
+                  control={formStep1.control}
+                  name="name"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter your full name" />
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formStep1.control}
+                  name="email"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Enter your email"
+                        />
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formStep1.control}
+                  name="password"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Create a password"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((s) => !s)}
+                            className="absolute right-3 top-2 text-gray-500 hover:text-gray-700"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={18} />
+                            ) : (
+                              <Eye size={18} />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formStep1.control}
+                  name="confirmPassword"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Confirm your password"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword((s) => !s)}
+                            className="absolute right-3 top-2 text-gray-500 hover:text-gray-700"
+                          >
+                            {showConfirmPassword ? (
+                              <EyeOff size={18} />
+                            ) : (
+                              <Eye size={18} />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" className="w-full">
+                  Continue
+                </Button>
+              </form>
+            </Form>
           </>
         )}
 
@@ -356,36 +290,27 @@ export default function SignupWizard() {
                 We've sent a verification code to{" "}
                 <strong>{step1Data?.email}</strong>
               </p>
-              <FormInput
-                label="Verification Code"
+              <Input
+                value={otpValue}
+                onChange={(e) => setOtpValue(e.target.value)}
                 placeholder="Enter 6-digit code"
-                register={{
-                  value: otpValue,
-                  onChange: (e: any) => setOtpValue(e.target.value),
-                }}
-                error={otpValue && otpValue !== DEMO_OTP ? "Invalid OTP" : ""}
-                valid={otpValue === DEMO_OTP}
+                className="w-full"
               />
               <div className="flex gap-3">
-                <button
-                  type="button"
+                <Button
+                  variant="outline"
                   onClick={() => setStep(1)}
-                  className="flex-1 py-3 border-2 border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1"
                 >
                   Back
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
-                >
+                </Button>
+                <Button type="submit" className="flex-1">
                   Verify
-                </button>
+                </Button>
               </div>
-              <div className="text-center">
-                <p className="text-sm text-yellow-600 bg-yellow-50 p-2 rounded">
-                  Demo OTP: 123456
-                </p>
-              </div>
+              <p className="text-sm text-yellow-600 bg-yellow-50 p-2 rounded text-center">
+                Demo OTP: 123456
+              </p>
             </form>
           </>
         )}
@@ -397,103 +322,154 @@ export default function SignupWizard() {
               title="Business Information"
               subtitle="Complete your business details"
             />
-            <form onSubmit={h3(submitStep3)} className="space-y-6">
-              <FormInput
-                label="Business Name"
-                placeholder="Enter your business name"
-                register={r3("businessName")}
-                error={e3.businessName?.message}
-                valid={t3.businessName && !e3.businessName}
-              />
-              <FormTextArea
-                label="Business Address"
-                placeholder="Enter your complete business address"
-                register={r3("businessAddress")}
-                error={e3.businessAddress?.message}
-                valid={t3.businessAddress && !e3.businessAddress}
-              />
-              <FormInput
-                label="Business Phone"
-                placeholder="Enter your business phone number"
-                register={r3("businessPhone")}
-                error={e3.businessPhone?.message}
-                valid={t3.businessPhone && !e3.businessPhone}
-              />
-              <FormSelect
-                label="Business Category"
-                options={[
-                  { value: "", label: "Select Business Category" },
-                  { value: "Retail", label: "Retail" },
-                  { value: "Wholesale", label: "Wholesale" },
-                  { value: "Service", label: "Service" },
-                  { value: "Manufacturing", label: "Manufacturing" },
-                  { value: "Food & Beverage", label: "Food & Beverage" },
-                ]}
-                register={r3("businessCategory")}
-                error={e3.businessCategory?.message}
-                valid={t3.businessCategory && !e3.businessCategory}
-              />
-
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Business License (Optional)
-                </label>
-                <input
-                  type="file"
-                  {...r3("file")}
-                  accept="image/*,.pdf"
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+            <Form {...formStep3}>
+              <form
+                onSubmit={formStep3.handleSubmit(submitStep3)}
+                className="space-y-6"
+              >
+                <FormField
+                  control={formStep3.control}
+                  name="businessName"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Business Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Enter your business name"
+                        />
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
                 />
-                {previewUrl && (
-                  <img
-                    src={previewUrl}
-                    alt="License preview"
-                    className="mt-2 h-20 w-20 object-cover rounded border"
+
+                <FormField
+                  control={formStep3.control}
+                  name="businessAddress"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Business Address</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Enter your complete business address"
+                        />
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={formStep3.control}
+                  name="businessPhone"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Business Phone</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Enter your business phone number"
+                        />
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={formStep3.control}
+                  name="businessCategory"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel>Business Category</FormLabel>
+                      <FormControl>
+                        <Select {...field}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Business Category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[
+                              "Retail",
+                              "Wholesale",
+                              "Service",
+                              "Manufacturing",
+                              "Food & Beverage",
+                            ].map((c) => (
+                              <SelectItem key={c} value={c}>
+                                {c}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Business Profile Image (Optional)
+                  </label>
+                  <input
+                    type="file"
+                    {...formStep3.register("file")}
+                    accept="image/*,.pdf"
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
-                )}
-              </div>
-
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  {...r3("acceptTerms")}
-                  className="mt-1"
-                />
-                <div className="flex-1">
-                  <span className="text-sm text-gray-700">
-                    I agree to the{" "}
-                    <a href="#" className="text-blue-600 hover:underline">
-                      Terms and Conditions
-                    </a>{" "}
-                    and{" "}
-                    <a href="#" className="text-blue-600 hover:underline">
-                      Privacy Policy
-                    </a>
-                  </span>
-                  {e3.acceptTerms && (
-                    <p className="text-sm text-red-600 mt-1">
-                      {e3.acceptTerms.message}
-                    </p>
+                  {previewUrl && (
+                    <img
+                      src={previewUrl}
+                      alt="License preview"
+                      className="mt-2 h-20 w-20 object-cover rounded border"
+                    />
                   )}
                 </div>
-              </div>
 
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="flex-1 py-3 border-2 border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
-                >
-                  Complete Setup
-                </button>
-              </div>
-            </form>
+                <FormField
+                  control={formStep3.control}
+                  name="acceptTerms"
+                  render={({ field, fieldState }) => (
+                    <FormItem className="flex items-start gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value} // use checked instead of value
+                          onCheckedChange={(checked) => field.onChange(checked)} // map onCheckedChange
+                        />
+                      </FormControl>
+                      <div className="flex-1">
+                        <span className="text-sm text-gray-700">
+                          I agree to the{" "}
+                          <a href="#" className="text-blue-600 hover:underline">
+                            Terms and Conditions
+                          </a>{" "}
+                          and{" "}
+                          <a href="#" className="text-blue-600 hover:underline">
+                            Privacy Policy
+                          </a>
+                        </span>
+                        <FormMessage>{fieldState.error?.message}</FormMessage>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setStep(2)}
+                    className="flex-1"
+                  >
+                    Back
+                  </Button>
+                  <Button type="submit" className="flex-1">
+                    Complete Setup
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </>
         )}
 
@@ -504,21 +480,19 @@ export default function SignupWizard() {
               title="Welcome to Retailer Panel!"
               subtitle="Account Created Successfully"
             />
-            <div className="mb-6">
-              <CheckCircle className="mx-auto text-green-500 mb-4" size={64} />
-              <p className="text-gray-700 mb-2">
-                Your account has been created successfully!
-              </p>
-              <p className="text-sm text-gray-500">
-                Welcome to the retailer panel, {step1Data?.name}
-              </p>
-            </div>
-            <button
+            <CheckCircle className="mx-auto text-green-500 mb-4" size={64} />
+            <p className="text-gray-700 mb-2">
+              Your account has been created successfully!
+            </p>
+            <p className="text-sm text-gray-500">
+              Welcome to the retailer panel, {step1Data?.name}
+            </p>
+            <Button
               onClick={() => router.replace("/dashboard")}
-              className="w-full py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+              className="w-full mt-4"
             >
               Go to Dashboard →
-            </button>
+            </Button>
           </div>
         )}
       </div>
