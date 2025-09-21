@@ -1,30 +1,29 @@
+"use client";
+
 import React, { useState } from "react";
 import { X, Upload, Plus, Minus } from "lucide-react";
 import { Product } from "../types";
+import Link from "next/link";
 
 interface AddProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   onSubmit: (product: Product) => void;
   editingProduct?: Product | null;
 }
 
 const AddProductModal: React.FC<AddProductModalProps> = ({
-  isOpen,
-  onClose,
   onSubmit,
   editingProduct,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<
-    Omit<Product, "id" | "createdAt" | "updatedAt">
-  >({
+  type ProductFormData = Omit<Product, "id" | "createdAt" | "updatedAt">;
+
+  const [formData, setFormData] = useState<ProductFormData>({
     name: editingProduct?.name || "",
     sku: editingProduct?.sku || "",
     category: editingProduct?.category || "",
     price: editingProduct?.price || 0,
     costPrice: editingProduct?.costPrice || 0,
-    salePrice: editingProduct?.salePrice || undefined,
+    salePrice: editingProduct?.salePrice,
     stock: editingProduct?.stock || 0,
     lowStockThreshold: editingProduct?.lowStockThreshold || 10,
     images: editingProduct?.images || [],
@@ -82,8 +81,15 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
 
   const handleSubmit = () => {
     if (validateStep(currentStep)) {
-      onSubmit(formData);
-      onClose();
+      const product: Product = {
+        ...formData,
+        id: editingProduct?.id ?? crypto.randomUUID(), // or however you generate IDs
+        createdAt: editingProduct?.createdAt ?? new Date(),
+        updatedAt: new Date(),
+      };
+
+      onSubmit(product);
+
       setCurrentStep(1);
       setFormData({
         name: "",
@@ -145,11 +151,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
     }));
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm w-full max-w-4xl mx-auto">
+      <div className="rounded-lg w-full">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <div>
@@ -160,12 +164,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
               Step {currentStep} of 4: {steps[currentStep - 1].subtitle}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <X size={24} />
-          </button>
         </div>
 
         {/* Progress */}
@@ -591,12 +589,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
           </button>
 
           <div className="flex gap-2">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              Cancel
-            </button>
+            <Link href={{ pathname: "/inventory" }}>
+              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                Cancel
+              </button>
+            </Link>
 
             {currentStep < 4 ? (
               <button

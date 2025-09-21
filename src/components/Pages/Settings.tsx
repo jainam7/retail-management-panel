@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Building2, ShieldCheck, Bell } from "lucide-react";
 import ProfileTab from "@/features/settings/components/ProfileTab";
 import BusinessTab from "@/features/settings/components/BusinessTab";
 import SecurityTab from "@/features/settings/components/SecurityTab";
+import NotificationsTab from "@/features/settings/components/NotificationTab";
 
 export default function SettingsPage() {
   const [user, setUser] = useState<any>(null);
@@ -37,31 +37,20 @@ export default function SettingsPage() {
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
         </TabsList>
 
-        {/* Profile */}
         <TabsContent value="profile">
           <ProfileTab user={user} />
         </TabsContent>
 
-        {/* Business */}
         <TabsContent value="business">
           <BusinessTab user={user} />
         </TabsContent>
 
-        {/* Security */}
         <TabsContent value="security">
           <SecurityTab />
         </TabsContent>
 
-        {/* Notifications */}
         <TabsContent value="notifications">
-          <div className="p-6 bg-white rounded-lg shadow">
-            <h2 className="font-semibold flex items-center gap-2 mb-2">
-              <Bell className="h-5 w-5" /> Notifications
-            </h2>
-            <p className="text-sm text-gray-600">
-              Manage your notification preferences here.
-            </p>
-          </div>
+          <NotificationsTab />
         </TabsContent>
       </Tabs>
     </div>

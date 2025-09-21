@@ -8,7 +8,6 @@ import LowStockAlert from "@/features/inventory/component/LowStockAlert";
 import FiltersSection from "@/features/inventory/component/FiltersSection";
 import ProductsTable from "@/features/inventory/component/ProductsTable";
 import Pagination from "@/features/inventory/component/Pagination";
-import AddProductModal from "@/features/inventory/component/AddProductModal";
 import DeleteConfirmModal from "@/features/inventory/component/DeleteConfirmModal";
 import { Download } from "lucide-react";
 
@@ -20,18 +19,14 @@ const InventoryPage: React.FC = () => {
     pagination,
     loading,
     error,
-    isAddProductModalOpen,
-    selectedProduct,
     sortBy,
     sortOrder,
-    addProduct,
     updateProduct,
     deleteProduct,
     updateFilters,
     updatePagination,
     updateSorting,
     openAddProductModal,
-    closeAddProductModal,
     selectProduct,
     exportToCSV,
   } = useInventory();
@@ -52,6 +47,7 @@ const InventoryPage: React.FC = () => {
   };
 
   const handleDeleteClick = (product: Product) => {
+    console.log("product ---", product);
     setProductToDelete(product);
     setDeleteModalOpen(true);
   };
@@ -92,7 +88,7 @@ const InventoryPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading inventory...</p>
         </div>
       </div>
@@ -120,22 +116,21 @@ const InventoryPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       {/* Navigation Breadcrumb */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 py-4">
             <span className="text-gray-500">🏠</span>
-            <span className="text-gray-500">Dashboard</span>
-            <span className="text-gray-400">${">"}</span>
+            <span className="text-gray-400">{">"}</span>
             <span className="font-medium text-gray-900">Inventory</span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-4">
         {/* Header */}
-        <InventoryHeader onAddProduct={openAddProductModal} />
+        <InventoryHeader />
 
         {/* Low Stock Alert */}
         <LowStockAlert products={products} onRestock={handleRestock} />
@@ -163,7 +158,7 @@ const InventoryPage: React.FC = () => {
         </div>
 
         {/* Products Table */}
-        {/* <ProductsTable
+        <ProductsTable
           products={filteredProducts}
           sortBy={sortBy}
           sortOrder={sortOrder}
@@ -172,7 +167,8 @@ const InventoryPage: React.FC = () => {
           onDelete={handleDeleteClick}
           currentPage={pagination.page}
           itemsPerPage={pagination.limit}
-        /> */}
+          loading={loading}
+        />
 
         {/* Pagination */}
         <Pagination
@@ -185,12 +181,12 @@ const InventoryPage: React.FC = () => {
         />
 
         {/* Modals */}
-        <AddProductModal
+        {/* <AddProductModal
           isOpen={isAddProductModalOpen}
           onClose={closeAddProductModal}
           onSubmit={selectedProduct ? updateProduct : addProduct}
           editingProduct={selectedProduct}
-        />
+        /> */}
 
         <DeleteConfirmModal
           isOpen={deleteModalOpen}

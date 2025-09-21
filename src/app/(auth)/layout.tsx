@@ -13,8 +13,10 @@ export default function AuthLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50 flex items-center justify-center">
-        {children}
+      <body className="min-h-screen bg-gray-50 flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="w-full max-w-md lg:max-w-lg xl:max-w-xl">
+          {children}
+        </div>
       </body>
     </html>
   );
