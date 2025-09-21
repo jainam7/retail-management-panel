@@ -67,7 +67,9 @@ export default function OrdersPage() {
 
   // Sorting logic
   const sortedOrders = [...filteredOrders].sort((a, b) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let valA: any = a[sortBy as keyof Order];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let valB: any = b[sortBy as keyof Order];
 
     if (sortBy === "customer") {

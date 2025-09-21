@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ProfileTab({ user }: { user: any }) {
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [isSaving, setIsSaving] = useState(false);

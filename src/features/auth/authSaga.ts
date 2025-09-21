@@ -54,7 +54,7 @@ function* handleLogin(
  * we simply accept it and make user logged in (payload carries token/user).
  */
 function* handleSignupComplete(
-  action: PayloadAction<{ token: string; user: any; remember: boolean }>
+  action: PayloadAction<{ token: string; user: unknown; remember: boolean }>
 ) {
   // simulate processing time
   yield delay(700);

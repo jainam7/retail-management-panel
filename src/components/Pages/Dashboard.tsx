@@ -2,15 +2,10 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
   LineChart,
   Line,
 } from "recharts";
@@ -135,6 +130,7 @@ const getStatusColor = (status: string) => {
 };
 
 export default function Dashboard() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -153,10 +149,10 @@ export default function Dashboard() {
       {/* Welcome Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl shadow-sm">
         <h1 className="text-xl lg:text-2xl font-bold mb-1">
-          Welcome back, {user?.name}
+          Welcome back, {user?.name ? user?.name : ""}
         </h1>
         <p className="text-blue-100 text-sm lg:text-base">
-          Here's what's happening with your business today.
+          Here&apos;s what&apos;s happening with your business today.
         </p>
       </div>
 

@@ -10,7 +10,7 @@ import {
   sendOtpSuccess,
 } from "@/features/auth/authSlice";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, CheckCircle } from "lucide-react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -287,7 +287,7 @@ export default function SignupWizard() {
             />
             <form onSubmit={verifyOtp} className="space-y-6">
               <p className="text-sm text-gray-600 text-center">
-                We've sent a verification code to{" "}
+                We&rsquo;ve sent a verification code to{" "}
                 <strong>{step1Data?.email}</strong>
               </p>
               <Input
@@ -420,6 +420,7 @@ export default function SignupWizard() {
                     className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                   {previewUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={previewUrl}
                       alt="License preview"

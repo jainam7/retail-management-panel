@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function BusinessTab({ user }: { user: any }) {
   const [formData, setFormData] = useState({
     businessName: user?.businessName || "",

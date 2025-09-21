@@ -1,4 +1,5 @@
-// app/dashboard/page.tsx
+"use client";
+
 import Providers from "@/components/Providers";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import AddProductPage from "@/features/inventory/component/AddProduct";
@@ -6,6 +7,9 @@ import { Product } from "@/features/inventory/types";
 import Link from "next/link";
 
 export default function AddProduct() {
+  const handleAddProduct = (product: Product) => {
+    console.log("Product added:", product);
+  };
   return (
     <Providers>
       <ProtectedRoute>
@@ -29,7 +33,7 @@ export default function AddProduct() {
               features
             </p>
           </div>
-          <AddProductPage />
+          <AddProductPage onSubmit={handleAddProduct} />
         </div>
       </ProtectedRoute>
     </Providers>

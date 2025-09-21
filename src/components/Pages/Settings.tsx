@@ -8,7 +8,7 @@ import SecurityTab from "@/features/settings/components/SecurityTab";
 import NotificationsTab from "@/features/settings/components/NotificationTab";
 
 export default function SettingsPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
 
   useEffect(() => {
     const authData = localStorage.getItem("auth");

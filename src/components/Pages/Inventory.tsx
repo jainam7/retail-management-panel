@@ -47,7 +47,6 @@ const InventoryPage: React.FC = () => {
   };
 
   const handleDeleteClick = (product: Product) => {
-    console.log("product ---", product);
     setProductToDelete(product);
     setDeleteModalOpen(true);
   };

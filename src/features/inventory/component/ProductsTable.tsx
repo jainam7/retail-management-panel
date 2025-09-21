@@ -15,6 +15,7 @@ interface ProductsTableProps {
   sortOrder: "asc" | "desc";
   onSort: (column: string) => void;
   onEdit: (product: Product) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDelete: (productId: any) => void;
   currentPage: number;
   itemsPerPage: number;
@@ -26,7 +27,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
   sortBy,
   sortOrder,
   onSort,
-  onEdit,
   onDelete,
   currentPage,
   itemsPerPage,

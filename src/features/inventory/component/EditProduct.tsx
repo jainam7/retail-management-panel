@@ -44,7 +44,6 @@ interface EditProductPageProps {
 
 export default function EditProductPage({
   product: initialProduct,
-  onBack,
   onSave,
   onDuplicate,
   onRestore,
@@ -70,7 +69,7 @@ export default function EditProductPage({
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleInputChange = (field: keyof Product, value: any) => {
+  const handleInputChange = (field: keyof Product, value: unknown) => {
     setProduct((prev) => ({
       ...prev,
       [field]: value,

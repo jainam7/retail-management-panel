@@ -161,12 +161,12 @@ export const useInventory = () => {
       ["Name", "SKU", "Category", "Price", "Stock", "Status"],
       ...inventory.filteredProducts.map(
         (product: {
-          name: any;
-          sku: any;
-          category: any;
-          price: { toString: () => any };
-          stock: { toString: () => any };
-          isActive: any;
+          name: unknown;
+          sku: unknown;
+          category: unknown;
+          price: { toString: () => unknown };
+          stock: { toString: () => unknown };
+          isActive: unknown;
         }) => [
           product.name,
           product.sku,
