@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store/hooks";
 import { cn } from "@/lib/utils";
 import {
   Home,
@@ -13,6 +14,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { logout } from "@/features/auth/authSlice";
 import { useEffect, useState } from "react";
 
 const menuItems = [
@@ -32,6 +34,7 @@ export function Sidebar() {
   } | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setMounted(true);
@@ -74,9 +77,9 @@ export function Sidebar() {
 
   const handleSignOut = () => {
     localStorage.removeItem("auth");
+    dispatch(logout()); // ✅ reset Redux state
     router.push("/login");
   };
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };

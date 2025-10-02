@@ -47,7 +47,7 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (auth.isAuthenticated && window.location.pathname === "/login") {
       router.replace("/dashboard");
     }
   }, [auth.isAuthenticated, router]);
