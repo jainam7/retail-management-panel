@@ -77,7 +77,7 @@ export function Sidebar() {
 
   const handleSignOut = () => {
     localStorage.removeItem("auth");
-    dispatch(logout()); // ✅ reset Redux state
+    dispatch(logout());
     router.push("/login");
   };
   const toggleMobileMenu = () => {
@@ -146,7 +146,7 @@ export function Sidebar() {
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="h-full p-4 flex flex-col">
+        <div className="h-full flex flex-col overflow-y-auto p-4">
           <SidebarContent
             user={user}
             pathname={pathname}
